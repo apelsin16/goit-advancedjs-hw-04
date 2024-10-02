@@ -1,0 +1,36 @@
+.form {
+    padding-top: 16px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+input {
+    width: 272px;
+    height: 40px;
+    border-radius: 4px;
+    border: 1px solid #808080;
+    outline: none;
+    padding-left: 10px;
+}
+
+input:hover {
+    border-color: #000000;
+}
+
+input:active {
+    border-color: #4E75FF;
+}
+
+button {
+    background: #4E75FF;
+    color: #FFFFFF;
+    width: 91px;
+    height: 40px;
+    border: none;
+    border-radius: 8px;
+}
+
+button:hover {
+    background-color: #6C8CFF;
+}

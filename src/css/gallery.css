@@ -1,0 +1,48 @@
+.gallery {
+    display: flex;
+    flex-wrap: wrap;   
+    margin-top: 32px; 
+    row-gap: 24px;
+    justify-content: space-evenly;
+}
+
+.gallery-link {
+    max-width: 360px;
+    position: relative;
+}
+
+.gallery-link img {
+    width: 360px;
+    height: 200px;
+    object-fit: cover;
+}
+
+.gallery-link dl {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    height: 48px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    background: #FFFFFF;
+    margin: 0;
+} 
+
+.gallery-link dt {
+    line-height: 2;
+}
+
+.gallery-link dd {
+    margin: 0;
+}
+
+.button-wrapper {
+    width: 100%;
+    text-align: center;
+    padding-bottom: 16px;
+}
