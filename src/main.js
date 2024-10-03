@@ -16,7 +16,7 @@ let page = 1;
 const per_page = 15;
 let lastQuery = ''
 
-const createQuery = () => {
+const createQuery = async () => {
     if(!input.value.trim() && !lastQuery) {
         iziToast.error({
             position: 'topRight',
@@ -34,24 +34,24 @@ const createQuery = () => {
         per_page,
         page
     };
-    fetchData(searchParams, moreLoad)
-        .then(() => {
-            lightbox.refresh();
-        });
+    await fetchData(searchParams, moreLoad);
+    
+    lightbox.refresh();
 }
 
 export const moreLoad = async (total) => {    
-    const totalPage = total/per_page;
+    const totalPage = Math.ceil(total/per_page);
+    page += 1;
+    console.log(totalPage);
+    console.log(page);    
     
-    if(totalPage < page) {
-        iziToast.error({
+    if(page === totalPage) {
+        iziToast.info({
             message: "We're sorry, but you've reached the end of search results.",
             position: 'topRight'            
         });
         const loadMoreButton = document.querySelector('#load-more');
         loadMoreButton.remove();
-    } else {
-        page += 1;
         createQuery(); 
     };
 }
@@ -60,6 +60,7 @@ form.addEventListener('submit', e => {
     e.preventDefault();
     gallery.innerHTML = '';
     lastQuery = '';
+    page = 1;
     
     createQuery();
     
