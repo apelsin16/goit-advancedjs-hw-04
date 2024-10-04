@@ -41,8 +41,9 @@
     margin: 0;
 }
 
-.button-wrapper {
+.wrapper {
     width: 100%;
-    text-align: center;
-    padding-bottom: 16px;
+    padding: 16px;
+    display: flex;
+    justify-content: center;
 }
