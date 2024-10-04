@@ -34,6 +34,6 @@ export const render = (hits) => {
                     </dl>
                 </a>
             </li>
-    `).join();
+    `).join('');
     gallery.insertAdjacentHTML('beforeend', markup);
 }

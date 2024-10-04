@@ -39,6 +39,13 @@ const updateGallery = async () => {
 
         const totalPages = Math.ceil(total / per_page);
 
+        if (hits.length === 0) {
+            hideLoadMoreButton();
+            iziToast.info({
+                message: "Sorry, nothing was found for your request.",
+                position: 'topRight'
+            });
+        };
         if (total > per_page) showLoadMoreButton();
         if (page === totalPages) {
             iziToast.info({
