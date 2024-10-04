@@ -17,101 +17,69 @@ let page = 1;
 const per_page = 15;
 let lastSearchQuery = '';
 
-const toggleLoadMoreButton = hideButton => {
-    if(!gallery.hasChildNodes() || hideButton) {
-        loadMoreButton.style.display = 'none';
-    } else {
-        loadMoreButton.style.display = 'block';
-    }
-}
+const showLoadMoreButton = () => loadMoreButton.style.display = 'block';
+const hideLoadMoreButton = () => loadMoreButton.style.display = 'none';
 
-const toggleLoader = hideLoader => {
-    if(hideLoader) {
-        loader.classList.remove('i-b-display');
-    } else {
-        loader.classList.add('i-b-display');
-    }
-}
+const showLoader = () => loader.classList.add('i-b-display');
+const hideLoader = () => loader.classList.remove('i-b-display');
 
-form.addEventListener('submit', async e => {
+const handleError = (error) => {
+    console.error(error);
+    iziToast.error({
+        message: 'An error occurred. Please try again.',
+        position: 'topRight'
+    });
+};
+
+const updateGallery = async () => {
+    try {
+        const { hits, total } = await fetchData(lastSearchQuery, page, per_page);
+        render(hits);        
+        lightbox.refresh();
+
+        const totalPages = Math.ceil(total / per_page);
+
+        if (total > per_page) showLoadMoreButton();
+        if (page === totalPages) {
+            iziToast.info({
+                message: "We're sorry, but you've reached the end of search results.",
+                position: 'topRight'
+            });
+            hideLoadMoreButton();
+        }
+    } catch (error) {
+        handleError(error);
+    } finally {
+        hideLoader();
+    }
+};
+
+form.addEventListener('submit', async (e) => {
     e.preventDefault();
     gallery.innerHTML = '';
     const searchQuery = input.value.trim();
-    lastSearchQuery = '';
-    page = 1;
-    toggleLoader();    
-    if(!searchQuery) {
+
+    if (!searchQuery) {
         iziToast.error({
             position: 'topRight',
             message: 'Please enter your search query'
         });
-        form.elements.search.value = '';
+        hideLoadMoreButton();
         return;
     }
-    try {
-        const {hits, total} = await fetchData(searchQuery, page, per_page);
-        render(hits);
-        lightbox.refresh();
-        const totalPages = Math.ceil(total/per_page);
-        if(total > per_page) {
-            toggleLoadMoreButton();
-        }
-        if(page === totalPages) {
-            iziToast.info({
-                message: "We're sorry, but you've reached the end of search results.",
-                position: 'topRight'            
-            });
-            
-            toggleLoadMoreButton(true);
-        };
 
-    } 
-    catch (error) {
-        console.log(error);
-    }
-    finally {
-        toggleLoader(true);
-    }
-    
     lastSearchQuery = searchQuery;
-    form.elements.search.value = '';   
+    page = 1;
+    showLoader();
+    await updateGallery();
+    form.elements.search.value = '';
 });
 
-loadMoreButton.addEventListener('click', async (e) => {
-    e.preventDefault();
-    toggleLoader();
-    page += 1;    
-    try {
-        const {hits, total} = await fetchData(lastSearchQuery, page, per_page);
-        render(hits);
-        smoothScroll();
-        lightbox.refresh();
-        const totalPages = Math.ceil(total/per_page);
-        if(total > per_page) {
-            toggleLoadMoreButton();
-        }
-        if(page === totalPages) {
-            iziToast.info({
-                message: "We're sorry, but you've reached the end of search results.",
-                position: 'topRight'            
-            });
-            
-            toggleLoadMoreButton(true);
-        };
-
-    } 
-    catch (error) {
-        console.log(error);
-    }
-    finally {
-        toggleLoader(true);
-    }
-})
-
-window.addEventListener('load', () => {
-    toggleLoadMoreButton();
+loadMoreButton.addEventListener('click', async () => {
+    showLoader();
+    page += 1;
+    await updateGallery();
+    smoothScroll();
 });
 
-
-
-
+window.addEventListener('load', hideLoadMoreButton);
